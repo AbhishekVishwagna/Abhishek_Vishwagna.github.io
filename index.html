@@ -45,13 +45,15 @@ section{padding:56px 0;border-top:1px dashed var(--line)}
 h2{font:700 clamp(32px,4.5vw,46px)/1 var(--head);margin:0 0 8px}
 .sub{color:var(--dim);margin:0 0 28px;max-width:60ch}
 /* projects */
-$('projList').innerHTML=PROJECTS.map((p,i)=>{const h=p.url||(p.repo?ME.github+'/'+p.repo:'');return `<article class="proj" data-open="false"><div class="head">
-<button aria-expanded="false" aria-controls="pb${i}"><span><h3>${esc(p.t)}</h3><span class="one">${esc(p.one)}</span></span><span class="chev">&gt;</span></button>
-${h?`<a class="gh" href="${esc(h)}" target="_blank" rel="noopener">${esc(p.label||'View on GitHub')}</a>`:''}</div>
-<div class="body" id="pb${i}"><div class="tags">${p.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-${p.d.map(x=>`<p>${esc(x)}</p>`).join('')}</div></article>`}).join('');
-document.querySelectorAll('.proj .head button').forEach(b=>b.onclick=()=>{const a=b.closest('.proj'),o=a.dataset.open!=='true';a.dataset.open=o;b.setAttribute('aria-expanded',o)});
-
+.proj{display:block;background:var(--mask2);border:1px solid var(--line);border-left:4px solid var(--copper);margin-bottom:14px;border-radius:4px;padding:18px 22px;color:inherit;text-decoration:none}
+a.proj:hover{border-color:var(--copper);background:#10342b;box-shadow:0 10px 24px #0007}
+.ptop{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.proj h3{font:600 26px var(--head);margin:0;letter-spacing:.02em}
+.go{font:500 14px var(--mono);color:var(--copper);white-space:nowrap}
+.proj .one{color:var(--dim);font-size:15px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tag{font:12px var(--mono);border:1px solid var(--trace);color:#bfe3d0;padding:2px 8px;border-radius:3px}
+.proj p.d{margin:8px 0 0;max-width:72ch;color:#cfe0d3}
 /* skills */
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .tabs button{font:14px var(--mono);background:none;color:var(--dim);border:1px solid var(--trace);padding:5px 12px;border-radius:3px;cursor:pointer}
@@ -98,12 +100,7 @@ main{position:relative;z-index:1}
 @keyframes blink{50%{opacity:.15}}
 .pin{animation:pop .45s both}
 @keyframes pop{from{opacity:0;transform:scale(.7)}}
-.proj:hover{box-shadow:-6px 0 0 #e0a84d44}
-.proj .head{display:flex;align-items:center}
-.proj .head button{all:unset;box-sizing:border-box;flex:1;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;cursor:pointer}
-.gh{font:500 14px var(--mono);margin-right:16px;padding:6px 12px;border:1px solid var(--copper);border-radius:3px;text-decoration:none;white-space:nowrap}
-.gh:hover{background:var(--copper);color:#1a1405}
-.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s,box-shadow .25s}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s,box-shadow .25s,border-color .25s,background .25s}
 .reveal.in{opacity:1;transform:none}
 .fab{position:fixed;right:20px;bottom:20px;z-index:6;display:flex;align-items:center;gap:10px;font:600 18px var(--head);letter-spacing:.04em;background:var(--copper);color:#1a1405;border:0;border-radius:99px;padding:12px 22px 12px 18px;cursor:pointer;animation:ring 2.4s infinite,float 3s ease-in-out infinite}
 .fab .led{background:#d22;box-shadow:0 0 8px #d22;animation:blink 1s infinite}
@@ -152,7 +149,7 @@ main{position:relative;z-index:1}
 
 <section id="projects">
  <h2>Projects</h2>
- <p class="sub">Click a project to open its details.</p>
+ <p class="sub">Click a project to open it on GitHub.</p>
  <div id="projList"></div>
 </section>
 
@@ -195,26 +192,29 @@ main{position:relative;z-index:1}
 const ME = {
   name: "Abhishek Basavaraj Vishwagna",
   email: "your.email@example.com",
-  github: "https://github.com/your-username",
-  linkedin: "https://www.linkedin.com/in/your-profile",
+  github: "https://github.com/AbhishekVishwagna",
+  linkedin: "https://www.linkedin.com/in/abhishek-vishwagna",
   cv: ""   // e.g. "cv.pdf" (put the file in the same folder as index.html)
 };
 const PROJECTS = [
- {t:"Keypad access controller",one:"Bare-metal STM32 door lock with a UART shell",repo:"stm32-keypad-access-controller",
-  tags:["STM32","Bare-metal C","Servo","UART"],
-  d:["Bare-metal firmware for an STM32 Nucleo that reads a 3x4 membrane keypad, drives a servo latch, signals its state with a bi-colour LED and a vibration motor, and accepts commands over a UART shell."]},
- {t:"FreeRTOS motor and servo control",one:"Real-time multitasking on an STM32 Nucleo",repo:"stm32-freertos-motor-servo",
-  tags:["STM32","FreeRTOS","CMSIS-RTOS v2","STM32CubeIDE"],
-  d:["A real-time controller with separate tasks for control, buttons, display and buzzer. The control loop runs at a fixed period, button presses reach their task through interrupt notifications, and a mutex protects shared state."]},
- {t:"FPGA burglar alarm",one:"Verilog design on the DE10-Standard board",repo:"fpga-burglar-alarm",
-  tags:["Verilog","FPGA","Quartus","ModelSim"],
-  d:["A burglar alarm built around a state machine, PIN entry and checking, and seven-segment display output. Verified with ModelSim testbenches and built in Quartus for the DE10-Standard."]},
- {t:"GraphRAG for 5G core fault diagnosis",one:"MSc dissertation, University of Leeds",repo:"graphrag-5g-core",
-  tags:["Neo4j","LangChain","RAGAS","Python"],
-  d:["A Neo4j knowledge graph of a multi-instance 5G core (18 nodes, based on the G-SPEC schema) with a LangChain pipeline that writes Cypher queries and then composes answers. Three LLMs were evaluated with RAGAS across about 2,382 questions."]},
- {t:"Human-computer interaction research paper",one:"Published research on how people use technology",url:"",label:"Read paper",
+ {t:"Pi-STM32 CAN telemetry gateway",one:"Automotive-style telemetry with a Raspberry Pi and an STM32",repo:"Pi-STM32-CAN-Telemetry-Gateway",
+  tags:["STM32","Raspberry Pi","CAN bus","Embedded C (HAL)","Python"],
+  d:"A telemetry gateway that moves data over a CAN bus between an STM32 running embedded C (HAL) and a Raspberry Pi, with a Python IoT pipeline on Linux."},
+ {t:"EV powertrain simulator",one:"Hardware-in-the-loop simulator on the Terasic DE1-SoC",repo:"EV_Powertrain_Simulator",
+  tags:["Verilog","FPGA","DE1-SoC","Linux"],
+  d:"A hardware-in-the-loop electric vehicle powertrain simulator. The FPGA fabric acts as a real-time virtual powertrain, with the ARM processor system running Linux alongside it."},
+ {t:"GraphRAG for 5G core",one:"Graph retrieval-augmented generation for network configuration validation",repo:"5G_Core_GraphRAG",
+  tags:["GraphRAG","Neo4j","LangChain","Python"],
+  d:"A graph-based retrieval-augmented generation system for validating 5G core network configuration. It is the basis of my MSc dissertation at Leeds."},
+ {t:"Voting machine system",one:"Bare-metal voting machine on the ARM Cortex-A9 (DE1-SoC)",repo:"Voting_Machine_System",
+  tags:["C","ARM Cortex-A9","DE1-SoC"],
+  d:"A voting machine with a real-time LCD display, hardware button input, a countdown timer and audio feedback."},
+ {t:"Green code",one:"Cutting the energy cost of running software",repo:"Green_code",
+  tags:["TypeScript"],
+  d:"A project on the energy cost of software: inefficient code uses more electricity, and that adds up to more CO2."},
+ {t:"Human-computer interaction paper",one:"Published research on how people use technology",
   tags:["HCI","User studies","Research"],
-  d:["A published paper in Human-Computer Interaction. It shapes how I design devices: the hardware has to make sense to the person holding it."]}
+  d:"A published paper in Human-Computer Interaction. It shapes how I design devices: the hardware has to make sense to the person holding it."}
 ];
 const SKILLS = [
  {n:"STM32",g:"Microcontrollers",d:"ARM Cortex-M boards. Clock setup, GPIO, timers, interrupts and peripherals."},
@@ -225,6 +225,7 @@ const SKILLS = [
  {n:"FreeRTOS",g:"Firmware",d:"Tasks, queues, semaphores and scheduling for real-time behaviour."},
  {n:"Python",g:"Tools",d:"Scripts for testing, data handling and quick prototypes."},
  {n:"FPGA",g:"Firmware",d:"Digital design in an HDL, simulation and running it on a board."},
+ {n:"CAN bus",g:"Interfaces",d:"Automotive network for messages between controllers."},
  {n:"UART",g:"Interfaces",d:"Serial link for debugging output and device-to-device messages."},
  {n:"I2C",g:"Interfaces",d:"Two-wire bus for sensors and small peripherals."},
  {n:"SPI",g:"Interfaces",d:"Fast four-wire bus for displays, memory and sensors."},
@@ -266,11 +267,8 @@ $('fq').oninput=$('am').oninput=draw;
 addEventListener('resize',size);size();if(!reduce)loop();
 
 /* projects */
-$('projList').innerHTML=PROJECTS.map((p,i)=>`<article class="proj" data-open="false">
-<button aria-expanded="false" aria-controls="pb${i}"><span><h3>${esc(p.t)}</h3><span class="one">${esc(p.one)}</span></span><span class="chev">&gt;</span></button>
-<div class="body" id="pb${i}"><div class="tags">${p.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-${p.d.map(x=>`<p>${esc(x)}</p>`).join('')}${p.link?`<p class="mono"><a href="${esc(p.link)}">View the code</a></p>`:''}</div></article>`).join('');
-document.querySelectorAll('.proj>button').forEach(b=>b.onclick=()=>{const a=b.parentElement,o=a.dataset.open!=='true';a.dataset.open=o;b.setAttribute('aria-expanded',o)});
+$('projList').innerHTML=PROJECTS.map(p=>{const h=p.url||(p.repo?ME.github+'/'+p.repo:''),t=h?'a':'div';
+ return `<${t} class="proj"${h?` href="${esc(h)}" target="_blank" rel="noopener"`:''}><div class="ptop"><h3>${esc(p.t)}</h3>${h?`<span class="go">${esc(p.label||'View on GitHub')}</span>`:''}</div><div class="one">${esc(p.one)}</div><div class="tags">${p.tags.map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div><p class="d">${esc(p.d)}</p></${t}>`}).join('');
 
 /* skills */
 const groups=['All',...new Set(SKILLS.map(s=>s.g))];let cur='All';
