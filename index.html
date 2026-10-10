@@ -102,20 +102,18 @@ main{position:relative;z-index:1}
 @keyframes pop{from{opacity:0;transform:scale(.7)}}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s,box-shadow .25s,border-color .25s,background .25s}
 .reveal.in{opacity:1;transform:none}
-.fab{position:fixed;right:20px;bottom:20px;z-index:6;display:flex;align-items:center;gap:10px;font:600 18px var(--head);letter-spacing:.04em;background:var(--copper);color:#1a1405;border:0;border-radius:99px;padding:12px 22px 12px 18px;cursor:pointer;animation:ring 2.4s infinite,float 3s ease-in-out infinite}
-.fab .led{background:#d22;box-shadow:0 0 8px #d22;animation:blink 1s infinite}
-@keyframes ring{0%{box-shadow:0 0 0 0 #e0a84dcc}70%,100%{box-shadow:0 0 0 18px #e0a84d00}}
-@keyframes float{50%{transform:translateY(-5px)}}
-.lab{position:fixed;inset:0;z-index:20;background:#081a15f5;overflow:auto}
-.lab:not([hidden]){animation:fade .35s}
-@keyframes fade{from{opacity:0}}
-.labin{max-width:1080px;margin:0 auto;padding:30px 22px 80px}
-.x{position:sticky;top:12px;float:right;z-index:2;font:600 18px var(--head);letter-spacing:.04em;background:var(--copper);color:#1a1405;border:0;border-radius:3px;padding:8px 18px;cursor:pointer}
-.lab .board{animation:pop .5s both}
-.lab .art{aspect-ratio:4/3;background:#f2f1ec;display:flex;align-items:center;justify-content:center;padding:10px}
-.lab .art img{width:100%;height:100%;object-fit:contain}
-.ph{font:13px var(--mono);color:#5b6b63}
-@media(prefers-reduced-motion:reduce){.fab,.pin,.lab .board{animation:none}}
+.rail{overflow:hidden;padding:14px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.track{display:flex;width:max-content;animation:slide var(--dur,60s) linear infinite}
+.rail:hover .track{animation-play-state:paused}
+@keyframes slide{to{transform:translateX(-50%)}}
+.dup{display:contents}
+.slide{flex:0 0 250px;margin-right:20px}
+.slide .art{aspect-ratio:4/3;background:#f2f1ec;display:flex;align-items:center;justify-content:center;padding:10px}
+.slide .art img{width:100%;height:100%;object-fit:contain}
+.slide h3{font:600 20px var(--head);margin:10px 0 0}
+.slide p{margin:0;font-size:14px;color:var(--dim)}
+.ph{font:13px var(--mono);color:#5b6b63;text-align:center}
+@media(prefers-reduced-motion:reduce){.pin{animation:none}.track{animation:none}.rail{overflow-x:auto}.dup{display:none}}
 @media(max-width:820px){.hero,.skillgrid{grid-template-columns:1fr}.hero{padding-top:40px}nav a:nth-child(n+4){display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
@@ -165,6 +163,12 @@ main{position:relative;z-index:1}
  <ul class="tl" id="tl"></ul>
 </section>
 
+<section id="boards">
+ <h2>Boards and debuggers I've used</h2>
+ <p class="sub" id="labsub"></p>
+ <div class="rail"><div class="track" id="track"></div></div>
+</section>
+
 <section id="contact">
  <h2>Contact</h2>
  <p class="sub">Type a command, or use the links below. Try <b>help</b>.</p>
@@ -175,45 +179,35 @@ main{position:relative;z-index:1}
  <div class="links" id="links"></div>
 </section>
 </main>
-<button class="fab" id="fab"><span class="led"></span>Take me to all the boards I've used</button>
-<div class="lab" id="lab" hidden role="dialog" aria-modal="true" aria-label="All boards and debuggers I have used">
- <div class="labin">
-  <button class="x" id="labx">Close</button>
-  <h2>Boards and debuggers I've used</h2>
-  <p class="sub" id="labsub"></p>
-  <div class="tabs" id="labtabs"></div>
-  <div class="boards" id="labgrid"></div>
- </div>
-</div>
 <footer><div class="wrap">Built by hand with HTML, CSS and JavaScript. No frameworks.</div></footer>
 
 <script>
 /* ============ EDIT YOUR DETAILS HERE ============ */
 const ME = {
   name: "Abhishek Basavaraj Vishwagna",
-  email: "your.email@example.com",
+  email: "abhivishwagna1@gmail.com",
   github: "https://github.com/AbhishekVishwagna",
   linkedin: "https://www.linkedin.com/in/abhishek-vishwagna",
   cv: ""   // e.g. "cv.pdf" (put the file in the same folder as index.html)
 };
 const PROJECTS = [
- {t:"Pi-STM32 CAN telemetry gateway",one:"Automotive-style telemetry with a Raspberry Pi and an STM32",repo:"Pi-STM32-CAN-Telemetry-Gateway",
-  tags:["STM32","Raspberry Pi","CAN bus","Embedded C (HAL)","Python"],
-  d:"A telemetry gateway that moves data over a CAN bus between an STM32 running embedded C (HAL) and a Raspberry Pi, with a Python IoT pipeline on Linux."},
- {t:"EV powertrain simulator",one:"Hardware-in-the-loop simulator on the Terasic DE1-SoC",repo:"EV_Powertrain_Simulator",
-  tags:["Verilog","FPGA","DE1-SoC","Linux"],
-  d:"A hardware-in-the-loop electric vehicle powertrain simulator. The FPGA fabric acts as a real-time virtual powertrain, with the ARM processor system running Linux alongside it."},
- {t:"GraphRAG for 5G core",one:"Graph retrieval-augmented generation for network configuration validation",repo:"5G_Core_GraphRAG",
-  tags:["GraphRAG","Neo4j","LangChain","Python"],
-  d:"A graph-based retrieval-augmented generation system for validating 5G core network configuration. It is the basis of my MSc dissertation at Leeds."},
  {t:"Voting machine system",one:"Bare-metal voting machine on the ARM Cortex-A9 (DE1-SoC)",repo:"Voting_Machine_System",
   tags:["C","ARM Cortex-A9","DE1-SoC"],
   d:"A voting machine with a real-time LCD display, hardware button input, a countdown timer and audio feedback."},
+ {t:"FPGA burglar alarm",one:"Verilog design on the DE10-Standard board",repo:"Burglar_Alarm_System_FPGA",
+  tags:["Verilog","FPGA","Quartus","ModelSim"],
+  d:"A burglar alarm built around a state machine, PIN entry and checking, and seven-segment display output. Verified with ModelSim testbenches and built in Quartus for the DE10-Standard."},
+ {t:"GraphRAG for 5G core",one:"Graph retrieval-augmented generation for network configuration validation",repo:"5G_Core_GraphRAG",
+  tags:["GraphRAG","Neo4j","LangChain","Python"],
+  d:"A graph-based retrieval-augmented generation system for validating 5G core network configuration. It is the basis of my MSc dissertation at Leeds."},
+ {t:"EV powertrain simulator",one:"Hardware-in-the-loop simulator on the Terasic DE1-SoC",repo:"EV_Powertrain_Simulator",
+  tags:["Verilog","FPGA","DE1-SoC","Linux"],
+  d:"A hardware-in-the-loop electric vehicle powertrain simulator. The FPGA fabric acts as a real-time virtual powertrain, with the ARM processor system running Linux alongside it."},
  {t:"Green code",one:"Cutting the energy cost of running software",repo:"Green_code",
   tags:["TypeScript"],
   d:"A project on the energy cost of software: inefficient code uses more electricity, and that adds up to more CO2."},
- {t:"Human-computer interaction paper",one:"Published research on how people use technology",
-  tags:["HCI","User studies","Research"],
+ {t:"Human-computer interaction paper",one:"Published research on how people use technology",url:"https://ieeexplore.ieee.org/document/9760914",label:"View IEEE paper",
+  tags:["HCI","User studies","Research","IEEE"],
   d:"A published paper in Human-Computer Interaction. It shapes how I design devices: the hardware has to make sense to the person holding it."}
 ];
 const SKILLS = [
@@ -323,19 +317,12 @@ const LAB=[
  ["d","AURIX debugger","Infineon","aurix-debugger.webp"],
  ["d","dsPIC debugger","Microchip","dspic-debugger.webp"]
 ];
-const lab=$('lab'),fab=$('fab');let labTab='all';
 function ph(i){i.parentNode.innerHTML='<span class="ph">Photo coming soon</span>'}
-function drawLab(){
- $('labsub').textContent=LAB.filter(x=>x[0]==='b').length+' boards and '+LAB.filter(x=>x[0]==='d').length+' debuggers.';
- $('labtabs').innerHTML=[['all','All'],['b','Boards'],['d','Debuggers']].map(t=>`<button aria-pressed="${t[0]===labTab}" data-t="${t[0]}">${t[1]}</button>`).join('');
- $('labgrid').innerHTML=LAB.filter(x=>labTab==='all'||x[0]===labTab).map((x,i)=>`<div class="board" style="animation-delay:${i*60}ms"><div class="art"><img loading="lazy" src="img/${x[0]==='b'?'boards':'debuggers'}/${x[3]}" alt="${esc(x[1])}" onerror="ph(this)"></div><h3>${esc(x[1])}</h3><p>${esc(x[2])}</p></div>`).join('');
- document.querySelectorAll('#labtabs button').forEach(b=>b.onclick=()=>{labTab=b.dataset.t;drawLab()})}
-function openLab(){drawLab();lab.hidden=false;document.body.style.overflow='hidden';$('labx').focus();history.replaceState(null,'','#boards')}
-function closeLab(){lab.hidden=true;document.body.style.overflow='';fab.focus();history.replaceState(null,'',location.pathname+location.search)}
-fab.onclick=openLab;$('labx').onclick=closeLab;
-addEventListener('keydown',e=>{if(e.key==='Escape'&&!lab.hidden)closeLab()});
-addEventListener('hashchange',()=>{if(location.hash==='#boards')openLab()});
-if(location.hash==='#boards')openLab();
+$('labsub').textContent=LAB.filter(x=>x[0]==='b').length+' boards and '+LAB.filter(x=>x[0]==='d').length+' debuggers. Hover to pause.';
+const slide=x=>`<div class="slide"><div class="art"><img src="img/${x[0]==='b'?'boards':'debuggers'}/${x[3]}" alt="${esc(x[1])}" onerror="ph(this)"></div><h3>${esc(x[1])}</h3><p>${esc(x[2])}${x[0]==='d'?' · debugger':''}</p></div>`;
+const setHtml=LAB.map(slide).join('');
+$('track').innerHTML=setHtml+`<div class="dup" aria-hidden="true">${setHtml}</div>`;
+$('track').style.setProperty('--dur',Math.round(LAB.length*270/70)+'s');
 
 /* scroll reveal */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
@@ -351,7 +338,7 @@ function typer(){const w=ROLES[ri];$('typed').textContent=w.slice(0,ci);
 reduce?$('typed').textContent=ROLES[0]:typer();
 
 /* count-up stats */
-const STATS=[[3,"years working with STM32",0],[1.5,"years at an embedded startup",1],[1,"published HCI paper",0],[2382,"questions in my GraphRAG evaluation",0]];
+const STATS=[[4,"years working with embedded boards",0],[1.5,"years at an embedded startup",1]];
 $('stats').innerHTML=STATS.map(s=>`<div><b data-v="${s[0]}" data-d="${s[2]}">0</b><span>${s[1]}</span></div>`).join('');
 const so=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;so.unobserve(e.target);const v=+e.target.dataset.v,d=+e.target.dataset.d,t0=performance.now();
  (function step(t){const p=reduce?1:Math.min((t-t0)/1400,1);e.target.textContent=(v*(1-Math.pow(1-p,3))).toLocaleString('en-GB',{minimumFractionDigits:d,maximumFractionDigits:d});if(p<1)requestAnimationFrame(step)})(t0)}));
